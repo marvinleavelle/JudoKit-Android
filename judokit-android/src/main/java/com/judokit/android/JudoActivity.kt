@@ -16,6 +16,7 @@ import com.google.android.gms.wallet.PaymentData
 import com.google.android.gms.wallet.Wallet
 import com.google.android.gms.wallet.WalletConstants
 import com.judokit.android.api.factory.JudoApiServiceFactory
+import com.judokit.android.api.model.request.ThreeDSDeviceData
 import com.judokit.android.model.CardScanResultType
 import com.judokit.android.model.CardScanningResult
 import com.judokit.android.model.JudoPaymentResult

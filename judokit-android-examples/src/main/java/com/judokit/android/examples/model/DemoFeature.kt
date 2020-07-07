@@ -19,4 +19,5 @@ enum class DemoFeature(
     SERVER_TO_SERVER_PAYMENT_METHODS(R.string.feature_title_server_to_server_payment_methods, R.string.feature_subtitle_server_to_server_payment_methods),
     PAY_BY_BANK_APP(R.string.feature_title_pay_by_bank_app, R.string.feature_subtitle_pay_by_bank_app),
     TOKEN_PAYMENT(R.string.feature_title_token_payment, R.string.feature_subtitle_token_payment),
+    THREE_DS_TWO_PARAMETERS(R.string.feature_title_token_payment, R.string.feature_subtitle_token_payment)
 }

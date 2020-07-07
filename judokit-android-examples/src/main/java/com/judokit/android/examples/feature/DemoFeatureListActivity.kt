@@ -22,6 +22,7 @@ import com.judokit.android.api.factory.JudoApiServiceFactory
 import com.judokit.android.api.model.Authorization
 import com.judokit.android.api.model.BasicAuthorization
 import com.judokit.android.api.model.PaymentSessionAuthorization
+import com.judokit.android.api.model.request.ThreeDSDeviceData
 import com.judokit.android.examples.R
 import com.judokit.android.examples.common.startResultActivity
 import com.judokit.android.examples.common.toResult
@@ -47,8 +48,8 @@ import com.judokit.android.model.googlepay.GooglePayBillingAddressParameters
 import com.judokit.android.model.googlepay.GooglePayEnvironment
 import com.judokit.android.model.googlepay.GooglePayShippingAddressParameters
 import com.readystatesoftware.chuck.ChuckInterceptor
-import java.util.UUID
 import kotlinx.android.synthetic.main.activity_demo_feature_list.*
+import java.util.UUID
 
 const val JUDO_PAYMENT_WIDGET_REQUEST_CODE = 1
 const val LAST_USED_WIDGET_TYPE_KEY = "LAST_USED_WIDGET_TYPE"
@@ -153,32 +154,39 @@ class DemoFeatureListActivity : AppCompatActivity() {
     }
 
     private fun showcaseFeature(feature: DemoFeature) {
-        try {
-            val widgetType = when (feature) {
-                DemoFeature.PAYMENT -> PaymentWidgetType.CARD_PAYMENT
-                DemoFeature.PREAUTH -> PaymentWidgetType.PRE_AUTH
-                DemoFeature.TOKEN_PAYMENT,
-                DemoFeature.REGISTER_CARD -> PaymentWidgetType.REGISTER_CARD
-                DemoFeature.CREATE_CARD_TOKEN -> PaymentWidgetType.CREATE_CARD_TOKEN
-                DemoFeature.CHECK_CARD -> PaymentWidgetType.CHECK_CARD
-                DemoFeature.PAYMENT_METHODS -> PaymentWidgetType.PAYMENT_METHODS
-                DemoFeature.PREAUTH_PAYMENT_METHODS -> PaymentWidgetType.PRE_AUTH_PAYMENT_METHODS
-                DemoFeature.SERVER_TO_SERVER_PAYMENT_METHODS -> PaymentWidgetType.SERVER_TO_SERVER_PAYMENT_METHODS
-                DemoFeature.GOOGLE_PAY_PAYMENT -> PaymentWidgetType.GOOGLE_PAY
-                DemoFeature.GOOGLE_PAY_PREAUTH -> PaymentWidgetType.PRE_AUTH_GOOGLE_PAY
-                DemoFeature.PAY_BY_BANK_APP -> PaymentWidgetType.PAY_BY_BANK_APP
-            }
-            val judoConfig = getJudo(widgetType)
-            navigateToJudoPaymentWidgetWithConfigurations(judoConfig, feature)
-            sharedPreferences.edit().putString(LAST_USED_WIDGET_TYPE_KEY, widgetType.name).apply()
-        } catch (exception: Exception) {
-            when (exception) {
-                is IllegalArgumentException, is IllegalStateException -> {
-                    val message = exception.message
-                        ?: "An error occurred, please check your settings."
-                    toast("Error: $message")
+        if (feature == DemoFeature.THREE_DS_TWO_PARAMETERS) {
+            val result = ThreeDSDeviceData.Builder().build(this)
+            startResultActivity(result.toResult())
+        } else {
+            try {
+                val widgetType = when (feature) {
+                    DemoFeature.PAYMENT -> PaymentWidgetType.CARD_PAYMENT
+                    DemoFeature.PREAUTH -> PaymentWidgetType.PRE_AUTH
+                    DemoFeature.TOKEN_PAYMENT,
+                    DemoFeature.REGISTER_CARD -> PaymentWidgetType.REGISTER_CARD
+                    DemoFeature.CREATE_CARD_TOKEN -> PaymentWidgetType.CREATE_CARD_TOKEN
+                    DemoFeature.CHECK_CARD -> PaymentWidgetType.CHECK_CARD
+                    DemoFeature.PAYMENT_METHODS -> PaymentWidgetType.PAYMENT_METHODS
+                    DemoFeature.PREAUTH_PAYMENT_METHODS -> PaymentWidgetType.PRE_AUTH_PAYMENT_METHODS
+                    DemoFeature.SERVER_TO_SERVER_PAYMENT_METHODS -> PaymentWidgetType.SERVER_TO_SERVER_PAYMENT_METHODS
+                    DemoFeature.GOOGLE_PAY_PAYMENT -> PaymentWidgetType.GOOGLE_PAY
+                    DemoFeature.GOOGLE_PAY_PREAUTH -> PaymentWidgetType.PRE_AUTH_GOOGLE_PAY
+                    DemoFeature.PAY_BY_BANK_APP -> PaymentWidgetType.PAY_BY_BANK_APP
+                    else -> throw IllegalArgumentException("Unsupported widget type")
                 }
-                else -> throw exception
+                val judoConfig = getJudo(widgetType)
+                navigateToJudoPaymentWidgetWithConfigurations(judoConfig, feature)
+                sharedPreferences.edit().putString(LAST_USED_WIDGET_TYPE_KEY, widgetType.name)
+                    .apply()
+            } catch (exception: Exception) {
+                when (exception) {
+                    is IllegalArgumentException, is IllegalStateException -> {
+                        val message = exception.message
+                            ?: "An error occurred, please check your settings."
+                        toast("Error: $message")
+                    }
+                    else -> throw exception
+                }
             }
         }
     }

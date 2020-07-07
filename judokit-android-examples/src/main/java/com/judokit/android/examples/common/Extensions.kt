@@ -11,6 +11,7 @@ import com.judokit.android.examples.result.RESULT
 import com.judokit.android.examples.result.ResultActivity
 import java.math.BigDecimal
 import java.util.Date
+import java.util.UUID
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 
@@ -57,6 +58,22 @@ fun <T : Any> KProperty1<T, *>.toResultItem(classInstance: Any?): ResultItem {
                 } else {
                     "null"
                 }
+            } else {
+                subResult = Result(propName, items)
+            }
+        }
+
+        Map::class -> {
+            val value = getter.call(classInstance) as Map<String,String>
+            val propName = "$name (${value?.size ?: 0} elements)"
+
+            val items = mutableListOf<ResultItem>()
+            value.forEach {
+                items.add(ResultItem(it.key, it.value, null))
+            }
+
+            if (items.isNullOrEmpty()) {
+                propValue = "(0 elements)"
             } else {
                 subResult = Result(propName, items)
             }
