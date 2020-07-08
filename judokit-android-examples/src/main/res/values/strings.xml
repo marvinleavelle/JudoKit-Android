@@ -39,6 +39,9 @@
     <string name="feature_title_token_payment">Token payments</string>
     <string name="feature_subtitle_token_payment">Token payments (no UI)</string>
 
+    <string name="feature_title_3DS_parameters">3DS 2.0 device parameters</string>
+    <string name="feature_subtitle_3DS_parameters">All available device parameters for 3DS 2.0</string>
+
     <string name="title_settings">Settings</string>
 
     <!-- Preference Titles -->
