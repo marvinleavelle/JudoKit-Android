@@ -11,7 +11,6 @@ import com.judokit.android.examples.result.RESULT
 import com.judokit.android.examples.result.ResultActivity
 import java.math.BigDecimal
 import java.util.Date
-import java.util.UUID
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 
@@ -27,7 +26,13 @@ fun Activity.startResultActivity(result: Result) {
 
 fun Any.toResult(): Result {
     val title = this::class.simpleName ?: "Details"
-    val items = this::class.memberProperties.map { it.toResultItem(this) }
+    val items = this::class.memberProperties.map {
+        if (this is String) {
+            ResultItem("",this, null)
+        } else {
+            it.toResultItem(this)
+        }
+    }
     return Result(title, items)
 }
 
@@ -64,12 +69,16 @@ fun <T : Any> KProperty1<T, *>.toResultItem(classInstance: Any?): ResultItem {
         }
 
         Map::class -> {
-            val value = getter.call(classInstance) as Map<String,String>
-            val propName = "$name (${value?.size ?: 0} elements)"
+            val value = getter.call(classInstance) as Map<*, *>
+            val propName = "$name (${value.size ?: 0} elements)"
 
             val items = mutableListOf<ResultItem>()
+//            for (item in value) {
+//                val myName = "$propName ${item.key}"
+//                items.add(ResultItem(myName, "", item.value))
+//            }
             value.forEach {
-                items.add(ResultItem(it.key, it.value, null))
+                items.add(ResultItem(it.key as String, it.value as String, null))
             }
 
             if (items.isNullOrEmpty()) {

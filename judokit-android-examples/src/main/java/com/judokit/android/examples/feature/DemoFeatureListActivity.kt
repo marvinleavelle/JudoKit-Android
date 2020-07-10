@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -155,8 +156,14 @@ class DemoFeatureListActivity : AppCompatActivity() {
 
     private fun showcaseFeature(feature: DemoFeature) {
         if (feature == DemoFeature.THREE_DS_TWO_PARAMETERS) {
-            val result = ThreeDSDeviceData.Builder().build(this)
-            startResultActivity(result.toResult())
+            val runnable = Runnable {
+                demoProgressBar.post { demoProgressBar.visibility = View.VISIBLE }
+                val result = ThreeDSDeviceData.Builder().build(this)
+                startResultActivity(result.toResult())
+                demoProgressBar.post { demoProgressBar.visibility = View.GONE }
+                window.setDimAmount(0f)
+            }
+            Thread(runnable).start()
         } else {
             try {
                 val widgetType = when (feature) {
