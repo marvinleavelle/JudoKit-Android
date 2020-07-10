@@ -10,19 +10,25 @@ import android.location.Location
 import android.location.LocationManager
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.os.Debug
+import android.os.Environment
+import android.os.StatFs
 import android.provider.Settings.Global
 import android.provider.Settings.Secure
 import android.provider.Settings.System
 import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
+import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import com.judokit.android.BuildConfig
 import java.net.Inet4Address
 import java.net.InetAddress
 import java.net.NetworkInterface
 import java.net.SocketException
 import java.util.Enumeration
+import java.util.Locale
 import java.util.TimeZone
 
 private const val AVAILABLE = "available"
@@ -30,7 +36,8 @@ private const val UNAVAILABLE = "unavailable"
 
 data class DeviceData(
     val available: Map<String, String>,
-    val unavailable: Map<String, String>
+    val unavailable: Map<String, String>,
+    val securityWarnings: List<String>
 )
 
 sealed class Identifiers {
@@ -97,8 +104,13 @@ sealed class Identifiers {
                     unavailable.add(C005 to DeviceParameterUnavailabilityReasonCodes.RE03.name)
                 }
                 available.add(C006 to TimeZone.getDefault().displayName)
-                //TODO: Identifiers.C007
+                //TODO: C007
+                unavailable.add(C007 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                val wm =
+                    context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                val display = wm.defaultDisplay
                 val metrics = DisplayMetrics()
+                display.getMetrics(metrics)
                 available.add(C008 to "${metrics.widthPixels}x${metrics.heightPixels}")
 
                 if (ContextCompat.checkSelfPermission(
@@ -141,8 +153,9 @@ sealed class Identifiers {
                         0
                     ).packageName
                 )
-                //TODO: Identifiers.C014
-                //TODO: Identifiers.C015
+                //TODO: C014
+                available.add(C015 to BuildConfig.VERSION_NAME)
+
                 parameters[AVAILABLE] = available
                 parameters[UNAVAILABLE] = unavailable
 
@@ -1081,304 +1094,434 @@ sealed class Identifiers {
             }
         }
     }
-    enum class SettingsSystem{
+
+    enum class SettingsSystem {
         //ACCELEROMETER_ROTATION
         A099,
+
         //BLUETOOTH_DISCOVERABILITY
         A100,
+
         //BLUETOOTH_DISCOVERABILITY_TIMEOUT
         A101,
+
         //DATE_FORMAT
         A102,
+
         //DTMF_TONE_TYPE_WHEN_DIALING
         A103,
+
         //DTMF_TONE_WHEN_DIALING
         A104,
+
         //END_BUTTON_BEHAVIOUR
         A105,
+
         //FONT_SCALE
         A106,
+
         //HAPTIC_FEEDBACK_ENABLED
         A107,
+
         //MODE_RINGER_STREAMS_AFFECTED
         A108,
+
         //NOTIFICATION_SOUND
         A109,
+
         //MUTE_STREAMS_AFFECTED
         A110,
+
         //RINGTONE
         A111,
+
         //SCREEN_BRIGHTNESS
         A112,
+
         //SCREEN_BRIGHTNESS_MODE
         A113,
+
         //SCREEN_OFF_TIMEOUT
         A114,
+
         //SOUND_EFFECTS_ENABLED
         A115,
+
         //TEXT_AUTO_CAPS
         A116,
+
         //TEXT_AUTO_PUNCTUATE
         A117,
+
         //TEXT_AUTO_REPLACE
         A118,
+
         //TEXT_SHOW_PASSWORD
         A119,
+
         //TIME_12_24
         A120,
+
         //USER_ROTATION
         A121,
+
         //VIBRATE_ON
         A122,
+
         //VIBRATE_WHEN_RINGING
         A123;
 
-    companion object{
-        fun getParameters(context:Context): MutableMap<String, List<Pair<SettingsSystem, String>>> {
+        companion object {
+            fun getParameters(context: Context): MutableMap<String, List<Pair<SettingsSystem, String>>> {
 
-            val parameters = mutableMapOf<String, List<Pair<SettingsSystem, String>>>()
-            val available = mutableListOf<Pair<SettingsSystem, String>>()
-            val unavailable = mutableListOf<Pair<SettingsSystem, String>>()
+                val parameters = mutableMapOf<String, List<Pair<SettingsSystem, String>>>()
+                val available = mutableListOf<Pair<SettingsSystem, String>>()
+                val unavailable = mutableListOf<Pair<SettingsSystem, String>>()
 
-            val accelerometerRotation = System.getString(
-                context.contentResolver,
-                System.ACCELEROMETER_ROTATION
-            )
-            if (accelerometerRotation != null) {
-                available.add(A099 to accelerometerRotation)
-            } else {
-                unavailable.add(A099 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val bluetoothDiscoverability = System.getString(
-                context.contentResolver,
-                System.BLUETOOTH_DISCOVERABILITY
-            )
-            if (bluetoothDiscoverability != null) {
-                available.add(A100 to bluetoothDiscoverability)
-            } else {
-                unavailable.add(A100 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val bluetoothDiscoverabilityTimeout = System.getString(
-                context.contentResolver,
-                System.BLUETOOTH_DISCOVERABILITY_TIMEOUT
-            )
-            if (bluetoothDiscoverabilityTimeout != null) {
-                available.add(A101 to bluetoothDiscoverabilityTimeout)
-            } else {
-                unavailable.add(A101 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val dateFormat = System.getString(
-                context.contentResolver,
-                System.DATE_FORMAT
-            )
-            if (dateFormat != null) {
-                available.add(A102 to dateFormat)
-            } else {
-                unavailable.add(A102 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val dtmfToneTypeWhenDialing = System.getString(
+                val accelerometerRotation = System.getString(
                     context.contentResolver,
-                    System.DTMF_TONE_TYPE_WHEN_DIALING
+                    System.ACCELEROMETER_ROTATION
                 )
-                if (dtmfToneTypeWhenDialing != null) {
-                    available.add(A103 to dtmfToneTypeWhenDialing)
+                if (accelerometerRotation != null) {
+                    available.add(A099 to accelerometerRotation)
                 } else {
-                    unavailable.add(A103 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                    unavailable.add(A099 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
                 }
-            }else{
-                unavailable.add(A103 to DeviceParameterUnavailabilityReasonCodes.RE02.name)
-            }
-            val dtmfToneWhenDialing = System.getString(
-                context.contentResolver,
-                System.DTMF_TONE_WHEN_DIALING
-            )
-            if (dtmfToneWhenDialing != null) {
-                available.add(A104 to dtmfToneWhenDialing)
-            } else {
-                unavailable.add(A104 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val endButtonBehavior = System.getString(
-                context.contentResolver,
-                System.END_BUTTON_BEHAVIOR
-            )
-            if (endButtonBehavior != null) {
-                available.add(A105 to endButtonBehavior)
-            } else {
-                unavailable.add(A105 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val fontScale = System.getString(
-                context.contentResolver,
-                System.FONT_SCALE
-            )
-            if (fontScale != null) {
-                available.add(A106 to fontScale)
-            } else {
-                unavailable.add(A106 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val hapticFeedbackEnabled = System.getString(
-                context.contentResolver,
-                System.HAPTIC_FEEDBACK_ENABLED
-            )
-            if (hapticFeedbackEnabled != null) {
-                available.add(A107 to hapticFeedbackEnabled)
-            } else {
-                unavailable.add(A107 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val modeRingerStreamsAffected = System.getString(
-                context.contentResolver,
-                System.MODE_RINGER_STREAMS_AFFECTED
-            )
-            if (modeRingerStreamsAffected != null) {
-                available.add(A108 to modeRingerStreamsAffected)
-            } else {
-                unavailable.add(A108 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val notificationSound = System.getString(
-                context.contentResolver,
-                System.NOTIFICATION_SOUND
-            )
-            if (notificationSound != null) {
-                available.add(A109 to notificationSound)
-            } else {
-                unavailable.add(A109 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val muteStreamsAffected = System.getString(
-                context.contentResolver,
-                System.MUTE_STREAMS_AFFECTED
-            )
-            if (muteStreamsAffected != null) {
-                available.add(A110 to muteStreamsAffected)
-            } else {
-                unavailable.add(A110 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val ringtone = System.getString(
-                context.contentResolver,
-                System.RINGTONE
-            )
-            if (ringtone != null) {
-                available.add(A111 to ringtone)
-            } else {
-                unavailable.add(A111 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val screenBrightness = System.getString(
-                context.contentResolver,
-                System.SCREEN_BRIGHTNESS
-            )
-            if (screenBrightness != null) {
-                available.add(A112 to screenBrightness)
-            } else {
-                unavailable.add(A112 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val screenBrightnessMode = System.getString(
-                context.contentResolver,
-                System.SCREEN_BRIGHTNESS_MODE
-            )
-            if (screenBrightnessMode != null) {
-                available.add(A113 to screenBrightnessMode)
-            } else {
-                unavailable.add(A113 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val screenOffTimeout = System.getString(
-                context.contentResolver,
-                System.SCREEN_OFF_TIMEOUT
-            )
-            if (screenOffTimeout != null) {
-                available.add(A114 to screenOffTimeout)
-            } else {
-                unavailable.add(A114 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val soundEffectsEnabled = System.getString(
-                context.contentResolver,
-                System.SOUND_EFFECTS_ENABLED
-            )
-            if (soundEffectsEnabled != null) {
-                available.add(A115 to soundEffectsEnabled)
-            } else {
-                unavailable.add(A115 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val textAutoCaps = System.getString(
-                context.contentResolver,
-                System.TEXT_AUTO_CAPS
-            )
-            if (textAutoCaps != null) {
-                available.add(A116 to textAutoCaps)
-            } else {
-                unavailable.add(A116 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val textAutoPunctuate = System.getString(
-                context.contentResolver,
-                System.TEXT_AUTO_PUNCTUATE
-            )
-            if (textAutoPunctuate != null) {
-                available.add(A117 to textAutoPunctuate)
-            } else {
-                unavailable.add(A117 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val textAutoReplace = System.getString(
-                context.contentResolver,
-                System.TEXT_AUTO_REPLACE
-            )
-            if (textAutoReplace != null) {
-                available.add(A118 to textAutoReplace)
-            } else {
-                unavailable.add(A118 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val textShowPassword = System.getString(
-                context.contentResolver,
-                System.TEXT_SHOW_PASSWORD
-            )
-            if (textShowPassword != null) {
-                available.add(A119 to textShowPassword)
-            } else {
-                unavailable.add(A119 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val time1224 = System.getString(
-                context.contentResolver,
-                System.TIME_12_24
-            )
-            if (time1224 != null) {
-                available.add(A120 to time1224)
-            } else {
-                unavailable.add(A120 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val userRotation = System.getString(
-                context.contentResolver,
-                System.USER_ROTATION
-            )
-            if (userRotation != null) {
-                available.add(A121 to userRotation)
-            } else {
-                unavailable.add(A121 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            val vibrateOn = System.getString(
-                context.contentResolver,
-                System.VIBRATE_ON
-            )
-            if (vibrateOn != null) {
-                available.add(A122 to vibrateOn)
-            } else {
-                unavailable.add(A122 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val vibrateWhenRinging = System.getString(
+                val bluetoothDiscoverability = System.getString(
                     context.contentResolver,
-                    System.VIBRATE_WHEN_RINGING
+                    System.BLUETOOTH_DISCOVERABILITY
                 )
-                if (vibrateWhenRinging != null) {
-                    available.add(A123 to vibrateWhenRinging)
+                if (bluetoothDiscoverability != null) {
+                    available.add(A100 to bluetoothDiscoverability)
                 } else {
-                    unavailable.add(A123 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                    unavailable.add(A100 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
                 }
-            } else {
-                unavailable.add(A123 to DeviceParameterUnavailabilityReasonCodes.RE02.name)
-            }
+                val bluetoothDiscoverabilityTimeout = System.getString(
+                    context.contentResolver,
+                    System.BLUETOOTH_DISCOVERABILITY_TIMEOUT
+                )
+                if (bluetoothDiscoverabilityTimeout != null) {
+                    available.add(A101 to bluetoothDiscoverabilityTimeout)
+                } else {
+                    unavailable.add(A101 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val dateFormat = System.getString(
+                    context.contentResolver,
+                    System.DATE_FORMAT
+                )
+                if (dateFormat != null) {
+                    available.add(A102 to dateFormat)
+                } else {
+                    unavailable.add(A102 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val dtmfToneTypeWhenDialing = System.getString(
+                        context.contentResolver,
+                        System.DTMF_TONE_TYPE_WHEN_DIALING
+                    )
+                    if (dtmfToneTypeWhenDialing != null) {
+                        available.add(A103 to dtmfToneTypeWhenDialing)
+                    } else {
+                        unavailable.add(A103 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                    }
+                } else {
+                    unavailable.add(A103 to DeviceParameterUnavailabilityReasonCodes.RE02.name)
+                }
+                val dtmfToneWhenDialing = System.getString(
+                    context.contentResolver,
+                    System.DTMF_TONE_WHEN_DIALING
+                )
+                if (dtmfToneWhenDialing != null) {
+                    available.add(A104 to dtmfToneWhenDialing)
+                } else {
+                    unavailable.add(A104 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val endButtonBehavior = System.getString(
+                    context.contentResolver,
+                    System.END_BUTTON_BEHAVIOR
+                )
+                if (endButtonBehavior != null) {
+                    available.add(A105 to endButtonBehavior)
+                } else {
+                    unavailable.add(A105 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val fontScale = System.getString(
+                    context.contentResolver,
+                    System.FONT_SCALE
+                )
+                if (fontScale != null) {
+                    available.add(A106 to fontScale)
+                } else {
+                    unavailable.add(A106 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val hapticFeedbackEnabled = System.getString(
+                    context.contentResolver,
+                    System.HAPTIC_FEEDBACK_ENABLED
+                )
+                if (hapticFeedbackEnabled != null) {
+                    available.add(A107 to hapticFeedbackEnabled)
+                } else {
+                    unavailable.add(A107 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val modeRingerStreamsAffected = System.getString(
+                    context.contentResolver,
+                    System.MODE_RINGER_STREAMS_AFFECTED
+                )
+                if (modeRingerStreamsAffected != null) {
+                    available.add(A108 to modeRingerStreamsAffected)
+                } else {
+                    unavailable.add(A108 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val notificationSound = System.getString(
+                    context.contentResolver,
+                    System.NOTIFICATION_SOUND
+                )
+                if (notificationSound != null) {
+                    available.add(A109 to notificationSound)
+                } else {
+                    unavailable.add(A109 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val muteStreamsAffected = System.getString(
+                    context.contentResolver,
+                    System.MUTE_STREAMS_AFFECTED
+                )
+                if (muteStreamsAffected != null) {
+                    available.add(A110 to muteStreamsAffected)
+                } else {
+                    unavailable.add(A110 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val ringtone = System.getString(
+                    context.contentResolver,
+                    System.RINGTONE
+                )
+                if (ringtone != null) {
+                    available.add(A111 to ringtone)
+                } else {
+                    unavailable.add(A111 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val screenBrightness = System.getString(
+                    context.contentResolver,
+                    System.SCREEN_BRIGHTNESS
+                )
+                if (screenBrightness != null) {
+                    available.add(A112 to screenBrightness)
+                } else {
+                    unavailable.add(A112 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val screenBrightnessMode = System.getString(
+                    context.contentResolver,
+                    System.SCREEN_BRIGHTNESS_MODE
+                )
+                if (screenBrightnessMode != null) {
+                    available.add(A113 to screenBrightnessMode)
+                } else {
+                    unavailable.add(A113 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val screenOffTimeout = System.getString(
+                    context.contentResolver,
+                    System.SCREEN_OFF_TIMEOUT
+                )
+                if (screenOffTimeout != null) {
+                    available.add(A114 to screenOffTimeout)
+                } else {
+                    unavailable.add(A114 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val soundEffectsEnabled = System.getString(
+                    context.contentResolver,
+                    System.SOUND_EFFECTS_ENABLED
+                )
+                if (soundEffectsEnabled != null) {
+                    available.add(A115 to soundEffectsEnabled)
+                } else {
+                    unavailable.add(A115 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val textAutoCaps = System.getString(
+                    context.contentResolver,
+                    System.TEXT_AUTO_CAPS
+                )
+                if (textAutoCaps != null) {
+                    available.add(A116 to textAutoCaps)
+                } else {
+                    unavailable.add(A116 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val textAutoPunctuate = System.getString(
+                    context.contentResolver,
+                    System.TEXT_AUTO_PUNCTUATE
+                )
+                if (textAutoPunctuate != null) {
+                    available.add(A117 to textAutoPunctuate)
+                } else {
+                    unavailable.add(A117 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val textAutoReplace = System.getString(
+                    context.contentResolver,
+                    System.TEXT_AUTO_REPLACE
+                )
+                if (textAutoReplace != null) {
+                    available.add(A118 to textAutoReplace)
+                } else {
+                    unavailable.add(A118 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val textShowPassword = System.getString(
+                    context.contentResolver,
+                    System.TEXT_SHOW_PASSWORD
+                )
+                if (textShowPassword != null) {
+                    available.add(A119 to textShowPassword)
+                } else {
+                    unavailable.add(A119 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val time1224 = System.getString(
+                    context.contentResolver,
+                    System.TIME_12_24
+                )
+                if (time1224 != null) {
+                    available.add(A120 to time1224)
+                } else {
+                    unavailable.add(A120 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val userRotation = System.getString(
+                    context.contentResolver,
+                    System.USER_ROTATION
+                )
+                if (userRotation != null) {
+                    available.add(A121 to userRotation)
+                } else {
+                    unavailable.add(A121 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                val vibrateOn = System.getString(
+                    context.contentResolver,
+                    System.VIBRATE_ON
+                )
+                if (vibrateOn != null) {
+                    available.add(A122 to vibrateOn)
+                } else {
+                    unavailable.add(A122 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val vibrateWhenRinging = System.getString(
+                        context.contentResolver,
+                        System.VIBRATE_WHEN_RINGING
+                    )
+                    if (vibrateWhenRinging != null) {
+                        available.add(A123 to vibrateWhenRinging)
+                    } else {
+                        unavailable.add(A123 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                    }
+                } else {
+                    unavailable.add(A123 to DeviceParameterUnavailabilityReasonCodes.RE02.name)
+                }
 
-            parameters[AVAILABLE] = available
-            parameters[UNAVAILABLE] = unavailable
-            return parameters
+                parameters[AVAILABLE] = available
+                parameters[UNAVAILABLE] = unavailable
+                return parameters
+            }
         }
     }
+
+    enum class PackageManagerKeys {
+        //isSafeMode
+        A124,
+
+        //getInstalledApplications
+        A125,
+
+        //getInstallerPackageName
+        A126,
+
+        //getSystemAvailableFeatures
+        A127,
+
+        //getSystemSharedLibraryNames
+        A128,
+
+        //getExternalStorageState
+        A129,
+
+        //getAvailableLocales
+        A130,
+
+        //density
+        A131,
+
+        //densityDpi
+        A132,
+
+        //scaledDensity
+        A133,
+
+        //xdpi
+        A134,
+
+        //ydpi
+        A135,
+
+        //statFs
+        A136;
+
+        companion object {
+            fun getParameters(context: Context): MutableMap<String, List<Pair<PackageManagerKeys, String>>> {
+
+                val parameters = mutableMapOf<String, List<Pair<PackageManagerKeys, String>>>()
+                val available = mutableListOf<Pair<PackageManagerKeys, String>>()
+                val unavailable = mutableListOf<Pair<PackageManagerKeys, String>>()
+
+                val packageManager = context.applicationContext.packageManager
+
+                available.add(A124 to packageManager.isSafeMode.toString())
+                available.add(
+                    A125 to packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+                        .toString()
+                )
+                try {
+                    val packageName = packageManager.getApplicationInfo(
+                        context.packageName,
+                        0
+                    ).packageName
+                    val installerPackageName =
+                        context.packageManager.getInstallerPackageName(packageName)
+                    if (installerPackageName != null) {
+                        available.add(A126 to installerPackageName)
+                    } else {
+                        unavailable.add(A126 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                    }
+                } catch (e: IllegalArgumentException) {
+                    unavailable.add(A126 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                available.add(A127 to packageManager.systemAvailableFeatures.size.toString())
+                val systemSharedLibraryNames = packageManager.systemSharedLibraryNames
+                if (systemSharedLibraryNames != null) {
+                    available.add(A128 to systemSharedLibraryNames.size.toString())
+                } else {
+                    unavailable.add(A128 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+                available.add(A129 to Environment.getExternalStorageState())
+                available.add(A130 to Locale.getAvailableLocales().size.toString())
+
+                val wm =
+                    context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                val display = wm.defaultDisplay
+                val metrics = DisplayMetrics()
+                display.getMetrics(metrics)
+
+                available.add(A131 to metrics.density.toString())
+                available.add(A132 to metrics.densityDpi.toString())
+                available.add(A133 to metrics.scaledDensity.toString())
+                available.add(A134 to metrics.xdpi.toString())
+                available.add(A135 to metrics.ydpi.toString())
+
+                val path = context.getExternalFilesDir(null)?.path
+                if (path != null) {
+                    available.add(A136 to StatFs(context.getExternalFilesDir(null)?.path).totalBytes.toString())
+                } else {
+                    unavailable.add(A136 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
+                }
+
+                parameters[AVAILABLE] = available
+                parameters[UNAVAILABLE] = unavailable
+                return parameters
+            }
+        }
     }
 }
 
@@ -1396,11 +1539,25 @@ enum class DeviceParameterUnavailabilityReasonCodes {
     RE04
 
 }
+enum class SecurityWarnings{
+    //The device is jailbroken.
+    SW01,
+    //The integrity of the SDK has been tampered.
+    SW02,
+    //An emulator is being used to run the App.
+    SW03,
+    //A debugger is attached to the App.
+    SW04,
+    //The OS or the OS version is not supported.
+    SW05
+}
 
 @SuppressLint("MissingPermission")
 fun getDeviceData(context: Context): DeviceData {
     val available = mutableMapOf<String, String>()
     val unavailable = mutableMapOf<String, String>()
+    val securityWarnings = mutableListOf<String>()
+
     val commonAvailableParameters =
         Identifiers.Common.getParameters(context).filterKeys { it == AVAILABLE }.values
     val commonUnavailableParameters =
@@ -1440,6 +1597,12 @@ fun getDeviceData(context: Context): DeviceData {
         Identifiers.SettingsSystem.getParameters(context).filterKeys { it == AVAILABLE }.values
     val settingsSystemUnavailableParameters =
         Identifiers.SettingsSystem.getParameters(context).filterKeys { it == UNAVAILABLE }.values
+
+    val packageManagerKeysAvailableParameters =
+        Identifiers.PackageManagerKeys.getParameters(context).filterKeys { it == AVAILABLE }.values
+    val packageManagerKeysUnavailableParameters =
+        Identifiers.PackageManagerKeys.getParameters(context)
+            .filterKeys { it == UNAVAILABLE }.values
 
     commonAvailableParameters.map {
         it.forEach { pair: Pair<Identifiers.Common, String> ->
@@ -1521,9 +1684,43 @@ fun getDeviceData(context: Context): DeviceData {
             unavailable[pair.first.name] = pair.second
         }
     }
+    packageManagerKeysAvailableParameters.map {
+        it.forEach { pair: Pair<Identifiers.PackageManagerKeys, String> ->
+            available[pair.first.name] = pair.second
+        }
+    }
+    packageManagerKeysUnavailableParameters.map {
+        it.forEach { pair: Pair<Identifiers.PackageManagerKeys, String> ->
+            unavailable[pair.first.name] = pair.second
+        }
+    }
 
-    return DeviceData(available, unavailable)
+    if(isEmulator()){
+        securityWarnings.add(SecurityWarnings.SW03.name)
+    }
+    if(Debug.isDebuggerConnected()){
+        securityWarnings.add(SecurityWarnings.SW04.name)
+    }
+
+    return DeviceData(available, unavailable, securityWarnings)
 }
+
+private fun isEmulator() = (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+            || Build.FINGERPRINT.startsWith("generic")
+            || Build.FINGERPRINT.startsWith("unknown")
+            || Build.HARDWARE.contains("goldfish")
+            || Build.HARDWARE.contains("ranchu")
+            || Build.MODEL.contains("google_sdk")
+            || Build.MODEL.contains("Emulator")
+            || Build.MODEL.contains("Android SDK built for x86")
+            || Build.MANUFACTURER.contains("Genymotion")
+            || Build.PRODUCT.contains("sdk_google")
+            || Build.PRODUCT.contains("google_sdk")
+            || Build.PRODUCT.contains("sdk")
+            || Build.PRODUCT.contains("sdk_x86")
+            || Build.PRODUCT.contains("vbox86p")
+            || Build.PRODUCT.contains("emulator")
+            || Build.PRODUCT.contains("simulator")
 
 private fun isWorldPhone(
     available: MutableList<Pair<Identifiers.Telephony, String>>,

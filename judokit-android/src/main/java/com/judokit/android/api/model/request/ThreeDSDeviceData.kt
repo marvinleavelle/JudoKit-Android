@@ -9,17 +9,21 @@ data class ThreeDSDeviceData(
     @SerializedName("DD")
     var deviceData: Map<String, String>,
     @SerializedName("DPNA")
-    var deviceParameterUnavailabilityReason: Map<String, String>
+    var deviceParameterUnavailabilityReason: Map<String, String>,
+    @SerializedName("SW")
+    var securityWarnings: List<String>
 ) {
     class Builder {
         fun build(context: Context): ThreeDSDeviceData {
             val data = getDeviceData(context)
             val available = data.available
             val unavailable = data.unavailable
+            val securityWarnings = data.securityWarnings
 
             return ThreeDSDeviceData(
                 deviceData = available,
-                deviceParameterUnavailabilityReason = unavailable
+                deviceParameterUnavailabilityReason = unavailable,
+                securityWarnings = securityWarnings
             )
         }
     }
