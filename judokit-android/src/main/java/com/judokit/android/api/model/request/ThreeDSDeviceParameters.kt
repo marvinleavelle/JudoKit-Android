@@ -42,49 +42,49 @@ data class DeviceData(
 
 sealed class Identifiers {
     enum class Common {
-        //Platform
+        // Platform
         C001,
 
-        //Device Model
+        // Device Model
         C002,
 
-        //OS Name
+        // OS Name
         C003,
 
-        //OS Version
+        // OS Version
         C004,
 
-        //Locale
+        // Locale
         C005,
 
-        //Time Zone
+        // Time Zone
         C006,
 
-        //Advertising ID
+        // Advertising ID
         C007,
 
-        //Screen Resolution
+        // Screen Resolution
         C008,
 
-        //Device Name
+        // Device Name
         C009,
 
-        //IP Address
+        // IP Address
         C010,
 
-        //Latitude
+        // Latitude
         C011,
 
-        //Longitude
+        // Longitude
         C012,
 
-        //Application Package Name
+        // Application Package Name
         C013,
 
-        //SDK App ID
+        // SDK App ID
         C014,
 
-        //SDK Version
+        // SDK Version
         C015;
 
         companion object {
@@ -104,7 +104,7 @@ sealed class Identifiers {
                     unavailable.add(C005 to DeviceParameterUnavailabilityReasonCodes.RE03.name)
                 }
                 available.add(C006 to TimeZone.getDefault().displayName)
-                //TODO: C007
+                // TODO: C007
                 unavailable.add(C007 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
                 val wm =
                     context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -125,8 +125,7 @@ sealed class Identifiers {
                 if (ContextCompat.checkSelfPermission(
                         context,
                         Manifest.permission.INTERNET
-                    ) == PackageManager.PERMISSION_GRANTED
-                    && ContextCompat.checkSelfPermission(
+                    ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
                         context,
                         Manifest.permission.ACCESS_NETWORK_STATE
                     ) == PackageManager.PERMISSION_GRANTED
@@ -153,7 +152,7 @@ sealed class Identifiers {
                         0
                     ).packageName
                 )
-                //TODO: C014
+                // TODO: C014
                 available.add(C015 to BuildConfig.VERSION_NAME)
 
                 parameters[AVAILABLE] = available
@@ -165,85 +164,85 @@ sealed class Identifiers {
     }
 
     enum class Telephony {
-        //DeviceId
+        // DeviceId
         A001,
 
-        //SubscriberId
+        // SubscriberId
         A002,
 
-        //IMEI/SV
+        // IMEI/SV
         A003,
 
-        //Group Identifier Level1
+        // Group Identifier Level1
         A004,
 
-        //Line1 Number
+        // Line1 Number
         A005,
 
-        //MmsUAProfUrl
+        // MmsUAProfUrl
         A006,
 
-        //MmsUserAgent
+        // MmsUserAgent
         A007,
 
-        //NetworkCountryIso
+        // NetworkCountryIso
         A008,
 
-        //NetworkOperator
+        // NetworkOperator
         A009,
 
-        //NetworkOperatorName
+        // NetworkOperatorName
         A010,
 
-        //NetworkType
+        // NetworkType
         A011,
 
-        //PhoneCount
+        // PhoneCount
         A012,
 
-        //PhoneType
+        // PhoneType
         A013,
 
-        //SimCountryIso
+        // SimCountryIso
         A014,
 
-        //SimOperator
+        // SimOperator
         A015,
 
-        //SimOperatorName
+        // SimOperatorName
         A016,
 
-        //SimSerialNumber
+        // SimSerialNumber
         A017,
 
-        //SimState
+        // SimState
         A018,
 
-        //VoiceMailAlphaTag
+        // VoiceMailAlphaTag
         A019,
 
-        //VoiceMailNumber
+        // VoiceMailNumber
         A020,
 
-        //hasIccCard
+        // hasIccCard
         A021,
 
-        //isHearingAidCompatibilitySupported
+        // isHearingAidCompatibilitySupported
         A022,
 
-        //isNetworkRoaming
+        // isNetworkRoaming
         A023,
 
-        //isSmsCapable
+        // isSmsCapable
         A024,
 
-        //isTtyModeSupported
+        // isTtyModeSupported
         A025,
 
-        //isVoiceCapable
+        // isVoiceCapable
         A026,
 
-        //isWorldPhone
+        // isWorldPhone
         A027;
 
         companion object {
@@ -372,37 +371,37 @@ sealed class Identifiers {
     }
 
     enum class Wifi {
-        //Wifi - Mac Address
+        // Wifi - Mac Address
         A028,
 
-        //BSSID
+        // BSSID
         A029,
 
-        //SSID
+        // SSID
         A030,
 
-        //Network ID
+        // Network ID
         A031,
 
-        //is5GHzBandSupported
+        // is5GHzBandSupported
         A032,
 
-        //isDeviceToApRttSupported
+        // isDeviceToApRttSupported
         A033,
 
-        //isEnhancedPowerReportingSupported
+        // isEnhancedPowerReportingSupported
         A034,
 
-        //isP2pSupported
+        // isP2pSupported
         A035,
 
-        //isPreferredNetworkOffloadSupported
+        // isPreferredNetworkOffloadSupported
         A036,
 
-        //isScanAlwaysAvailable
+        // isScanAlwaysAvailable
         A037,
 
-        //isTdlsSupported
+        // isTdlsSupported
         A038;
 
         companion object {
@@ -493,13 +492,13 @@ sealed class Identifiers {
     }
 
     enum class Bluetooth {
-        //Address
+        // Address
         A039,
 
-        //BondedDevices
+        // BondedDevices
         A040,
 
-        //isEnabled
+        // isEnabled
         A041;
 
         companion object {
@@ -535,73 +534,73 @@ sealed class Identifiers {
     }
 
     enum class PhoneBuild {
-        //BOARD
+        // BOARD
         A042,
 
-        //BOOTLOADER
+        // BOOTLOADER
         A043,
 
-        //BRAND
+        // BRAND
         A044,
 
-        //DEVICE
+        // DEVICE
         A045,
 
-        //DISPLAY
+        // DISPLAY
         A046,
 
-        //FINGERPRINT
+        // FINGERPRINT
         A047,
 
-        //HARDWARE
+        // HARDWARE
         A048,
 
-        //ID
+        // ID
         A049,
 
-        //MANUFACTURER
+        // MANUFACTURER
         A050,
 
-        //PRODUCT
+        // PRODUCT
         A051,
 
-        //RADIO
+        // RADIO
         A052,
 
-        //SERIAL
+        // SERIAL
         A053,
 
-        //SUPPORTED_32_BIT_ABIS
+        // SUPPORTED_32_BIT_ABIS
         A054,
 
-        //SUPPORTED_64_BIT_ABIS
+        // SUPPORTED_64_BIT_ABIS
         A055,
 
-        //TAGS
+        // TAGS
         A056,
 
-        //TIME
+        // TIME
         A057,
 
-        //TYPE
+        // TYPE
         A058,
 
-        //USER
+        // USER
         A059,
 
-        //CODENAME
+        // CODENAME
         A060,
 
-        //INCREMENTAL
+        // INCREMENTAL
         A061,
 
-        //PREVIEW_SDK_INT
+        // PREVIEW_SDK_INT
         A062,
 
-        //SDK_INT
+        // SDK_INT
         A063,
 
-        //SECURITY_PATCH
+        // SECURITY_PATCH
         A064;
 
         companion object {
@@ -685,55 +684,55 @@ sealed class Identifiers {
     }
 
     enum class SettingsSecure {
-        //ACCESSIBILITY_DISPLAY_INVERSION_ENABLED
+        // ACCESSIBILITY_DISPLAY_INVERSION_ENABLED
         A065,
 
-        //ACCESSIBILITY_ENABLED
+        // ACCESSIBILITY_ENABLED
         A066,
 
-        //ACCESSIBILITY_SPEAK_PASSWORD
+        // ACCESSIBILITY_SPEAK_PASSWORD
         A067,
 
-        //ALLOWED_GEOLOCATION_ORIGINS
+        // ALLOWED_GEOLOCATION_ORIGINS
         A068,
 
-        //ANDROID_ID
+        // ANDROID_ID
         A069,
 
-        //DEFAULT_INPUT_METHOD
+        // DEFAULT_INPUT_METHOD
         A071,
 
-        //ENABLED_ACCESSIBILITY_SERVICES
+        // ENABLED_ACCESSIBILITY_SERVICES
         A073,
 
-        //ENABLED_INPUT_METHODS
+        // ENABLED_INPUT_METHODS
         A074,
 
-        //INPUT_METHOD_SELECTOR_VISIBILITY
+        // INPUT_METHOD_SELECTOR_VISIBILITY
         A075,
 
-        //INSTALL_NON_MARKET_APPS
+        // INSTALL_NON_MARKET_APPS
         A076,
 
-        //LOCATION_MODE
+        // LOCATION_MODE
         A077,
 
-        //SKIP_FIRST_USE_HINTS
+        // SKIP_FIRST_USE_HINTS
         A078,
 
-        //SYS_PROP_SETTING_VERSION
+        // SYS_PROP_SETTING_VERSION
         A079,
 
-        //TTS_DEFAULT_PITCH
+        // TTS_DEFAULT_PITCH
         A080,
 
-        //TTS_DEFAULT_RATE
+        // TTS_DEFAULT_RATE
         A081,
 
-        //TTS_DEFAULT_SYNTH
+        // TTS_DEFAULT_SYNTH
         A082,
 
-        //TTS_ENABLED_PLUGINS
+        // TTS_ENABLED_PLUGINS
         A083;
 
         companion object {
@@ -883,55 +882,55 @@ sealed class Identifiers {
     }
 
     enum class SettingsGlobal {
-        //ADB_ENABLED
+        // ADB_ENABLED
         A084,
 
-        //AIRPLANE_MODE_RADIOS
+        // AIRPLANE_MODE_RADIOS
         A085,
 
-        //ALWAYS_FINISH_ACTIVITIES
+        // ALWAYS_FINISH_ACTIVITIES
         A086,
 
-        //ANIMATOR_DURATION_SCALE
+        // ANIMATOR_DURATION_SCALE
         A087,
 
-        //AUTO_TIME
+        // AUTO_TIME
         A088,
 
-        //AUTO_TIME_ZONE
+        // AUTO_TIME_ZONE
         A089,
 
-        //DATA_ROAMING
+        // DATA_ROAMING
         A070,
 
-        //DEVELOPMENT_SETTINGS_ENABLED
+        // DEVELOPMENT_SETTINGS_ENABLED
         A090,
 
-        //DEVICE_PROVISIONED
+        // DEVICE_PROVISIONED
         A072,
 
-        //HTTP_PROXY
+        // HTTP_PROXY
         A091,
 
-        //NETWORK_PREFERENCE
+        // NETWORK_PREFERENCE
         A092,
 
-        //STAY_ON_WHILE_PLUGGED_IN
+        // STAY_ON_WHILE_PLUGGED_IN
         A093,
 
-        //TRANSITION_ANIMATION_SCALE
+        // TRANSITION_ANIMATION_SCALE
         A094,
 
-        //USB_MASS_STORAGE_ENABLED
+        // USB_MASS_STORAGE_ENABLED
         A095,
 
-        //USE_GOOGLE_MAIL
+        // USE_GOOGLE_MAIL
         A096,
 
-        //WAIT_FOR_DEBUGGER
+        // WAIT_FOR_DEBUGGER
         A097,
 
-        //WIFI_NETWORKS_AVAILABLE_NOTIFICATION_ON
+        // WIFI_NETWORKS_AVAILABLE_NOTIFICATION_ON
         A098;
 
         companion object {
@@ -1087,7 +1086,6 @@ sealed class Identifiers {
                 }
                 unavailable.add(A098 to DeviceParameterUnavailabilityReasonCodes.RE02.name)
 
-
                 parameters[AVAILABLE] = available
                 parameters[UNAVAILABLE] = unavailable
                 return parameters
@@ -1096,79 +1094,79 @@ sealed class Identifiers {
     }
 
     enum class SettingsSystem {
-        //ACCELEROMETER_ROTATION
+        // ACCELEROMETER_ROTATION
         A099,
 
-        //BLUETOOTH_DISCOVERABILITY
+        // BLUETOOTH_DISCOVERABILITY
         A100,
 
-        //BLUETOOTH_DISCOVERABILITY_TIMEOUT
+        // BLUETOOTH_DISCOVERABILITY_TIMEOUT
         A101,
 
-        //DATE_FORMAT
+        // DATE_FORMAT
         A102,
 
-        //DTMF_TONE_TYPE_WHEN_DIALING
+        // DTMF_TONE_TYPE_WHEN_DIALING
         A103,
 
-        //DTMF_TONE_WHEN_DIALING
+        // DTMF_TONE_WHEN_DIALING
         A104,
 
-        //END_BUTTON_BEHAVIOUR
+        // END_BUTTON_BEHAVIOUR
         A105,
 
-        //FONT_SCALE
+        // FONT_SCALE
         A106,
 
-        //HAPTIC_FEEDBACK_ENABLED
+        // HAPTIC_FEEDBACK_ENABLED
         A107,
 
-        //MODE_RINGER_STREAMS_AFFECTED
+        // MODE_RINGER_STREAMS_AFFECTED
         A108,
 
-        //NOTIFICATION_SOUND
+        // NOTIFICATION_SOUND
         A109,
 
-        //MUTE_STREAMS_AFFECTED
+        // MUTE_STREAMS_AFFECTED
         A110,
 
-        //RINGTONE
+        // RINGTONE
         A111,
 
-        //SCREEN_BRIGHTNESS
+        // SCREEN_BRIGHTNESS
         A112,
 
-        //SCREEN_BRIGHTNESS_MODE
+        // SCREEN_BRIGHTNESS_MODE
         A113,
 
-        //SCREEN_OFF_TIMEOUT
+        // SCREEN_OFF_TIMEOUT
         A114,
 
-        //SOUND_EFFECTS_ENABLED
+        // SOUND_EFFECTS_ENABLED
         A115,
 
-        //TEXT_AUTO_CAPS
+        // TEXT_AUTO_CAPS
         A116,
 
-        //TEXT_AUTO_PUNCTUATE
+        // TEXT_AUTO_PUNCTUATE
         A117,
 
-        //TEXT_AUTO_REPLACE
+        // TEXT_AUTO_REPLACE
         A118,
 
-        //TEXT_SHOW_PASSWORD
+        // TEXT_SHOW_PASSWORD
         A119,
 
-        //TIME_12_24
+        // TIME_12_24
         A120,
 
-        //USER_ROTATION
+        // USER_ROTATION
         A121,
 
-        //VIBRATE_ON
+        // VIBRATE_ON
         A122,
 
-        //VIBRATE_WHEN_RINGING
+        // VIBRATE_WHEN_RINGING
         A123;
 
         companion object {
@@ -1420,43 +1418,43 @@ sealed class Identifiers {
     }
 
     enum class PackageManagerKeys {
-        //isSafeMode
+        // isSafeMode
         A124,
 
-        //getInstalledApplications
+        // getInstalledApplications
         A125,
 
-        //getInstallerPackageName
+        // getInstallerPackageName
         A126,
 
-        //getSystemAvailableFeatures
+        // getSystemAvailableFeatures
         A127,
 
-        //getSystemSharedLibraryNames
+        // getSystemSharedLibraryNames
         A128,
 
-        //getExternalStorageState
+        // getExternalStorageState
         A129,
 
-        //getAvailableLocales
+        // getAvailableLocales
         A130,
 
-        //density
+        // density
         A131,
 
-        //densityDpi
+        // densityDpi
         A132,
 
-        //scaledDensity
+        // scaledDensity
         A133,
 
-        //xdpi
+        // xdpi
         A134,
 
-        //ydpi
+        // ydpi
         A135,
 
-        //statFs
+        // statFs
         A136;
 
         companion object {
@@ -1526,29 +1524,33 @@ sealed class Identifiers {
 }
 
 enum class DeviceParameterUnavailabilityReasonCodes {
-    //Market or regional restriction on the parameter.
+    // Market or regional restriction on the parameter.
     RE01,
 
-    //Platform version does not support the parameter or the parameter has been deprecated.
+    // Platform version does not support the parameter or the parameter has been deprecated.
     RE02,
 
-    //Parameter collection not possible without prompting the user for permission.
+    // Parameter collection not possible without prompting the user for permission.
     RE03,
 
-    //Parameter value returned is null or blank.
+    // Parameter value returned is null or blank.
     RE04
-
 }
-enum class SecurityWarnings{
-    //The device is jailbroken.
+
+enum class SecurityWarnings {
+    // The device is jailbroken.
     SW01,
-    //The integrity of the SDK has been tampered.
+
+    // The integrity of the SDK has been tampered.
     SW02,
-    //An emulator is being used to run the App.
+
+    // An emulator is being used to run the App.
     SW03,
-    //A debugger is attached to the App.
+
+    // A debugger is attached to the App.
     SW04,
-    //The OS or the OS version is not supported.
+
+    // The OS or the OS version is not supported.
     SW05
 }
 
@@ -1695,32 +1697,32 @@ fun getDeviceData(context: Context): DeviceData {
         }
     }
 
-    if(isEmulator()){
+    if (isEmulator()) {
         securityWarnings.add(SecurityWarnings.SW03.name)
     }
-    if(Debug.isDebuggerConnected()){
+    if (Debug.isDebuggerConnected()) {
         securityWarnings.add(SecurityWarnings.SW04.name)
     }
 
     return DeviceData(available, unavailable, securityWarnings)
 }
 
-private fun isEmulator() = (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
-            || Build.FINGERPRINT.startsWith("generic")
-            || Build.FINGERPRINT.startsWith("unknown")
-            || Build.HARDWARE.contains("goldfish")
-            || Build.HARDWARE.contains("ranchu")
-            || Build.MODEL.contains("google_sdk")
-            || Build.MODEL.contains("Emulator")
-            || Build.MODEL.contains("Android SDK built for x86")
-            || Build.MANUFACTURER.contains("Genymotion")
-            || Build.PRODUCT.contains("sdk_google")
-            || Build.PRODUCT.contains("google_sdk")
-            || Build.PRODUCT.contains("sdk")
-            || Build.PRODUCT.contains("sdk_x86")
-            || Build.PRODUCT.contains("vbox86p")
-            || Build.PRODUCT.contains("emulator")
-            || Build.PRODUCT.contains("simulator")
+private fun isEmulator() = (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic")) ||
+        Build.FINGERPRINT.startsWith("generic") ||
+        Build.FINGERPRINT.startsWith("unknown") ||
+        Build.HARDWARE.contains("goldfish") ||
+        Build.HARDWARE.contains("ranchu") ||
+        Build.MODEL.contains("google_sdk") ||
+        Build.MODEL.contains("Emulator") ||
+        Build.MODEL.contains("Android SDK built for x86") ||
+        Build.MANUFACTURER.contains("Genymotion") ||
+        Build.PRODUCT.contains("sdk_google") ||
+        Build.PRODUCT.contains("google_sdk") ||
+        Build.PRODUCT.contains("sdk") ||
+        Build.PRODUCT.contains("sdk_x86") ||
+        Build.PRODUCT.contains("vbox86p") ||
+        Build.PRODUCT.contains("emulator") ||
+        Build.PRODUCT.contains("simulator")
 
 private fun isWorldPhone(
     available: MutableList<Pair<Identifiers.Telephony, String>>,
@@ -1738,7 +1740,6 @@ private fun isWorldPhone(
     }
 }
 
-
 private fun isVoiceCapable(
     available: MutableList<Pair<Identifiers.Telephony, String>>,
     unavailable: MutableList<Pair<Identifiers.Telephony, String>>,
@@ -1748,7 +1749,6 @@ private fun isVoiceCapable(
 } else {
     unavailable.add(Identifiers.Telephony.A026 to DeviceParameterUnavailabilityReasonCodes.RE03.name)
 }
-
 
 @SuppressLint("MissingPermission")
 private fun isTtySupported(
@@ -1768,7 +1768,6 @@ private fun isTtySupported(
     unavailable.add(Identifiers.Telephony.A025 to DeviceParameterUnavailabilityReasonCodes.RE02.name)
 }
 
-
 private fun isSmsCapable(
     available: MutableList<Pair<Identifiers.Telephony, String>>,
     unavailable: MutableList<Pair<Identifiers.Telephony, String>>,
@@ -1778,7 +1777,6 @@ private fun isSmsCapable(
 } else {
     unavailable.add(Identifiers.Telephony.A024 to DeviceParameterUnavailabilityReasonCodes.RE03.name)
 }
-
 
 private fun isHearingAidCompatibilitySupported(
     available: MutableList<Pair<Identifiers.Telephony, String>>,
@@ -1791,7 +1789,6 @@ private fun isHearingAidCompatibilitySupported(
         unavailable.add(Identifiers.Telephony.A022 to DeviceParameterUnavailabilityReasonCodes.RE03.name)
     }
 }
-
 
 @SuppressLint("MissingPermission")
 private fun getVoiceMailNumber(
@@ -1810,7 +1807,6 @@ private fun getVoiceMailNumber(
 } else {
     unavailable.add(Identifiers.Telephony.A020 to DeviceParameterUnavailabilityReasonCodes.RE03.name)
 }
-
 
 @SuppressLint("MissingPermission")
 private fun getSimSerialNumber(
@@ -1853,7 +1849,6 @@ private fun getSimOperatorName(
 } else {
     available.add(Identifiers.Telephony.A016 to DeviceParameterUnavailabilityReasonCodes.RE04.name)
 }
-
 
 private fun getPhoneCount(
     available: MutableList<Pair<Identifiers.Telephony, String>>,
@@ -1915,7 +1910,6 @@ private fun getLine1Number(
     }
 }
 
-
 @SuppressLint("MissingPermission")
 private fun getGroupIdLevel1(
     available: MutableList<Pair<Identifiers.Telephony, String>>,
@@ -1936,7 +1930,6 @@ private fun getGroupIdLevel1(
     }
 }
 
-
 @SuppressLint("MissingPermission")
 private fun getDeviceSoftwareInformation(
     available: MutableList<Pair<Identifiers.Telephony, String>>,
@@ -1954,7 +1947,6 @@ private fun getDeviceSoftwareInformation(
 } else {
     unavailable.add(Identifiers.Telephony.A003 to DeviceParameterUnavailabilityReasonCodes.RE03.name)
 }
-
 
 @SuppressLint("MissingPermission")
 private fun getSubscriberId(
