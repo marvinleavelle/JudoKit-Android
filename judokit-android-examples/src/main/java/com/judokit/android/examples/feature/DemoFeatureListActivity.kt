@@ -161,7 +161,6 @@ class DemoFeatureListActivity : AppCompatActivity() {
                 val result = ThreeDSDeviceData.Builder().build(this)
                 startResultActivity(result.toResult())
                 demoProgressBar.post { demoProgressBar.visibility = View.GONE }
-                window.setDimAmount(0f)
             }
             Thread(runnable).start()
         } else {
